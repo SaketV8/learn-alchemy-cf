@@ -1,0 +1,7 @@
+{
+  "extends": "@portfolio-cf/config/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "strictNullChecks": true
+  }
+}
