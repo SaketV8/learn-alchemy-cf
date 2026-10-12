@@ -2,25 +2,26 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { Button } from "@portfolio-cf/ui/components/button";
 import { cn } from "@portfolio-cf/ui/lib/utils";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 const attachmentVariants = cva(
-  "group/attachment relative flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-none border bg-card text-card-foreground transition-colors focus-within:ring-1 focus-within:ring-ring/50 has-[>a,>button]:hover:bg-muted/50 data-[state=error]:border-destructive/30 data-[state=idle]:border-dashed",
+  "group/attachment bg-card text-card-foreground focus-within:ring-ring/50 has-[>a,>button]:hover:bg-muted/50 data-[state=error]:border-destructive/30 relative flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-none border transition-colors focus-within:ring-1 data-[state=idle]:border-dashed",
   {
     variants: {
+      orientation: {
+        horizontal: "min-w-40 items-center",
+        vertical: "w-24 flex-col has-data-[slot=attachment-content]:w-30",
+      },
       size: {
         default:
           "gap-2 text-xs has-data-[slot=attachment-content]:px-2 has-data-[slot=attachment-content]:py-1.5 has-data-[slot=attachment-media]:p-1.5",
         sm: "gap-2.5 text-xs has-data-[slot=attachment-content]:px-1.5 has-data-[slot=attachment-content]:py-1 has-data-[slot=attachment-media]:p-1",
         xs: "gap-1.5 rounded-none text-xs has-data-[slot=attachment-content]:px-1.5 has-data-[slot=attachment-content]:py-1 has-data-[slot=attachment-media]:p-1",
       },
-      orientation: {
-        horizontal: "min-w-40 items-center",
-        vertical: "w-24 flex-col has-data-[slot=attachment-content]:w-30",
-      },
     },
-  },
+  }
 );
 
 function Attachment({
@@ -41,15 +42,18 @@ function Attachment({
       data-state={state}
       data-size={size}
       data-orientation={resolvedOrientation}
-      className={cn(attachmentVariants({ size, orientation }), className)}
+      className={cn(attachmentVariants({ orientation, size }), className)}
       {...props}
     />
   );
 }
 
 const attachmentMediaVariants = cva(
-  "relative flex aspect-square w-10 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted text-foreground group-data-[orientation=vertical]/attachment:w-full group-data-[size=sm]/attachment:w-8 group-data-[size=xs]/attachment:w-7 group-data-[size=xs]/attachment:rounded-none group-data-[state=error]/attachment:bg-destructive/10 group-data-[state=error]/attachment:text-destructive group-data-[orientation=vertical]/attachment:*:data-[slot=spinner]:size-6! [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 group-data-[orientation=vertical]/attachment:[&_svg:not([class*='size-'])]:size-6 group-data-[size=xs]/attachment:[&_svg:not([class*='size-'])]:size-3.5",
+  "bg-muted text-foreground group-data-[state=error]/attachment:bg-destructive/10 group-data-[state=error]/attachment:text-destructive relative flex aspect-square w-10 shrink-0 items-center justify-center overflow-hidden rounded-none group-data-[orientation=vertical]/attachment:w-full group-data-[size=sm]/attachment:w-8 group-data-[size=xs]/attachment:w-7 group-data-[size=xs]/attachment:rounded-none group-data-[orientation=vertical]/attachment:*:data-[slot=spinner]:size-6! [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 group-data-[orientation=vertical]/attachment:[&_svg:not([class*='size-'])]:size-6 group-data-[size=xs]/attachment:[&_svg:not([class*='size-'])]:size-3.5",
   {
+    defaultVariants: {
+      variant: "icon",
+    },
     variants: {
       variant: {
         icon: "",
@@ -57,10 +61,7 @@ const attachmentMediaVariants = cva(
           "opacity-60 group-data-[state=done]/attachment:opacity-100 group-data-[state=idle]/attachment:opacity-100 *:[img]:aspect-square *:[img]:w-full *:[img]:object-cover",
       },
     },
-    defaultVariants: {
-      variant: "icon",
-    },
-  },
+  }
 );
 
 function AttachmentMedia({
@@ -78,53 +79,65 @@ function AttachmentMedia({
   );
 }
 
-function AttachmentContent({ className, ...props }: React.ComponentProps<"div">) {
+function AttachmentContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="attachment-content"
       className={cn(
         "max-w-full min-w-0 flex-1 leading-tight group-data-[orientation=vertical]/attachment:px-1",
-        className,
+        className
       )}
       {...props}
     />
   );
 }
 
-function AttachmentTitle({ className, ...props }: React.ComponentProps<"span">) {
+function AttachmentTitle({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="attachment-title"
       className={cn(
-        "block max-w-full min-w-0 truncate font-medium group-data-[state=processing]/attachment:shimmer group-data-[state=uploading]/attachment:shimmer",
-        className,
+        "group-data-[state=processing]/attachment:shimmer group-data-[state=uploading]/attachment:shimmer block max-w-full min-w-0 truncate font-medium",
+        className
       )}
       {...props}
     />
   );
 }
 
-function AttachmentDescription({ className, ...props }: React.ComponentProps<"span">) {
+function AttachmentDescription({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="attachment-description"
       className={cn(
-        "mt-0.5 block min-w-0 truncate text-xs text-muted-foreground group-data-[state=error]/attachment:text-destructive/80",
+        "text-muted-foreground group-data-[state=error]/attachment:text-destructive/80 mt-0.5 block min-w-0 truncate text-xs",
         "max-w-full",
-        className,
+        className
       )}
       {...props}
     />
   );
 }
 
-function AttachmentActions({ className, ...props }: React.ComponentProps<"div">) {
+function AttachmentActions({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="attachment-actions"
       className={cn(
         "relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute group-data-[orientation=vertical]/attachment:top-3 group-data-[orientation=vertical]/attachment:right-3 group-data-[orientation=vertical]/attachment:gap-1",
-        className,
+        className
       )}
       {...props}
     />
@@ -160,10 +173,10 @@ function AttachmentTrigger({
     defaultTagName: "button",
     props: mergeProps<"button">(
       {
-        type: render ? type : (type ?? "button"),
         className: cn("absolute inset-0 z-10 outline-none", className),
+        type: render ? type : (type ?? "button"),
       },
-      props,
+      props
     ),
     render,
     state: {
@@ -177,8 +190,8 @@ function AttachmentGroup({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="attachment-group"
       className={cn(
-        "flex min-w-0 scroll-fade-x snap-x snap-mandatory scroll-px-1 scrollbar-none gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
-        className,
+        "scroll-fade-x flex min-w-0 snap-x snap-mandatory scroll-px-1 scrollbar-none gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
+        className
       )}
       {...props}
     />
